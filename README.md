@@ -1,5 +1,5 @@
 # This is a console bot-helper that works with the phone book using commands.
-# It can execute commands like:
+It can execute commands like:
           "showcommands" - lists all commands being processed.
           "add 'name' 'phone'" - Adds a contact {name} and {phone number} to a book.
           "showall" - Show a list of all contacts in the phone book.
