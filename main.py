@@ -1,4 +1,7 @@
+import pickle
+from pathlib import Path
 from assistant_bot.addressbook import *
+
 
 FILE_NAME = 'address-book.bin'
 BOOK = AddressBook()
@@ -168,7 +171,7 @@ def search_record(user_data):
 
 
 @input_error
-def advanced_search_record(user_data):
+def advanced_searching(user_data):
     if len(user_data) < 1:
         raise IndexError
     user_data = user_data[0]
@@ -177,36 +180,39 @@ def advanced_search_record(user_data):
         return "-There are no contacts in the phone book." \
                "\n-If you want to add a contact, enter: add 'name' 'phone number' 'birthday'(optional parameter)."
 
-    return BOOK.advanced_search_record(user_data)
+    return BOOK.advanced_searching(user_data)
 
 
 @input_error
 def show_commands(*args):
     return "-I can such commands as: " \
            "\n 1. hello - Greetings message." \
-           "\n 2. add 'name' 'phone' 'birthday' - Adds record the contact with {name} and {phone number} " \
+           "\n 2. showcommands - Shows a list of all commands." \
+           "\n 3. add 'name' 'phone' 'birthday' - Adds record the contact with {name} and {phone number} " \
            "and {birthday} (optional parameter) to the book." \
-           "\n 3. remove 'name' - Removes record {name}." \
-           "\n 4. showall - Show the list of all contacts in the phone book." \
-           "\n 5. addphone 'name' 'phone' - Adds {phone} number to contact {name}." \
-           "\n 6. changephone 'name' 'old phone' 'new phone' - Changes the {old phone} to the {new phone} " \
+           "\n 4. remove 'name' - Removes record {name}." \
+           "\n 5. showall - Show the list of all contacts in the phone book." \
+           "\n 6. addphone 'name' 'phone' - Adds {phone} number to contact {name}." \
+           "\n 7. changephone 'name' 'old phone' 'new phone' - Changes the {old phone} to the {new phone} " \
            "of the contact {name}." \
-           "\n 7. removephone 'name' 'phone' - Removes the {phone} of the contact {name}." \
-           "\n 8. addbirthday 'name' 'phone' - Adds {birthday} to contact {name}." \
-           "\n 9. changebirthday 'name' 'birthday' - Changes the {old birthday} to the {new birthday} " \
+           "\n 8. removephone 'name' 'phone' - Removes the {phone} of the contact {name}." \
+           "\n 9. addbirthday 'name' 'phone' - Adds {birthday} to contact {name}." \
+           "\n 10. changebirthday 'name' 'birthday' - Changes the {old birthday} to the {new birthday} " \
            "of the contact {name}." \
-           "\n 10. datetobirth {name} - Calculates the number of days until the birthday contact {name}." \
-           "\n 11. removebirthday 'name' 'birthday' - Removes the {birthday} of the contact {name}." \
-           "\n 12. search 'name' - Searches records by the {name}." \
-           "\n 13. asearch 'name or phone or birthday or multiple characters' - Searches for a records by the " \
+           "\n 11. datetobirth {name} - Calculates the number of days until the birthday contact {name}." \
+           "\n 12. removebirthday 'name' 'birthday' - Removes the {birthday} of the contact {name}." \
+           "\n 13. search 'name' - Searches records by the {name}." \
+           "\n 14. asearch 'name or phone or birthday or multiple characters' - Searches for a records by the " \
            r"specified criteria except special characters like .^$*+?{}[]\|()." \
-           "\n 14. changephone 'name' 'old phone number' 'new phone number' - Changes the old phone number " \
+           "\n 15. changephone 'name' 'old phone number' 'new phone number' - Changes the old phone number " \
            "to the new phone number {name}." \
-           "\n 15. exit or close or . (dot) or goodbye or bye - Terminates program execution."
+           "\n 16. exit or close or . (dot) or goodbye or bye - Terminates program execution."
 
 
 @input_error
 def exit_func(*args):
+    with open(FILE_NAME, 'wb') as file:
+        pickle.dump(BOOK, file)
     return "-Good bye!"
 
 
@@ -219,7 +225,7 @@ COMMANDS = {'hello': hello,
             'removephone': remove_phone,
             'showall': show_all,
             'search': search_record,
-            'asearch': advanced_search_record,
+            'asearch': advanced_searching,
             'addbirth': add_birthday,
             'changebirth': change_birthday,
             'datetobirth': date_to_birth,
@@ -251,4 +257,9 @@ def main():
 
 
 if __name__ == "__main__":
+
+    if Path(FILE_NAME).exists():
+        with open(FILE_NAME, 'rb') as file:
+            BOOK = pickle.load(file)
+
     main()

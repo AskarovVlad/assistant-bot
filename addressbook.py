@@ -1,5 +1,4 @@
 import re
-from pathlib import Path
 from re import findall
 from collections import UserDict
 from datetime import datetime
@@ -284,7 +283,7 @@ class AddressBook(UserDict):
 
         return "-Record not found." if not matches else "\n".join(matches)
 
-    def advanced_search_record(self, value):
+    def advanced_searching(self, value):
         matches = list()
 
         if [symb for symb in value if symb in r'.^$*+?{}[]\|()']:
